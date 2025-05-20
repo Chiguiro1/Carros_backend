@@ -5,3 +5,8 @@ app = FastAPI()
 
 app.include_router(carros_router)
 
+@app.get("/")
+def a():
+    return {"message":"hola"}
+
+
