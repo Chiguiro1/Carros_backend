@@ -12,6 +12,14 @@ router = APIRouter()
 #ruta para enviar un carro
 @router.post("/carros/")
 def crear_carro(carro: crearcarro, db: Session = Depends(get_db)):
+    carro_existente= db.query(Carro).filter(
+            (carro.modelo==carro.modelo) &
+            (carro.precio==carro.precio) &
+            (carro.kilometraje==carro.kilometraje)
+        ).first()
+    if carro_existente:
+        raise HTTPException(status_code=409, detail="El carro ya esta en la base de datos")
+
     nuevo_carro = Carro(
         modelo=carro.modelo,
         precio=carro.precio,
@@ -23,11 +31,20 @@ def crear_carro(carro: crearcarro, db: Session = Depends(get_db)):
     db.refresh(nuevo_carro)
     return nuevo_carro
 
+
 # ruta para leer un carro
 @router.get("/carros/", response_model=list[leercarro])
 def leer_carro(db: Session=Depends(get_db)):
     carros= db.query(Carro).all()
     return carros
+    
+#ruta para leer un carro por id
+@router.get("/carros/{id}",response_model=leercarro)
+def obtener_carro(id:int,db: Session=Depends(get_db)):
+    carro = db.query(Carro).get(id)
+    if carro is None:
+        raise HTTPException(status_code=404, detail="El carro no esta en la lista intente otro id :)")
+    return carro
 
 #ruta para enviar una marca
 @router.post("/marcas/")
@@ -44,5 +61,7 @@ def crear_marca(marca:crearmarca, db: Session = Depends(get_db)):
 #ruta para leer una marca
 @router.get("/marcas/", response_model=list[leermarca])
 def leer_marca(db: Session=Depends(get_db)):
-    marcas = db.query(Marca),all()
+    marcas = db.query(Marca).all()
     return marcas
+
+
