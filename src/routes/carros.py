@@ -13,9 +13,9 @@ router = APIRouter()
 @router.post("/carros/")
 def crear_carro(carro: crearcarro, db: Session = Depends(get_db)):
     carro_existente= db.query(Carro).filter(
-            (carro.modelo==carro.modelo) &
-            (carro.precio==carro.precio) &
-            (carro.kilometraje==carro.kilometraje)
+            (Carro.modelo==carro.modelo) &
+            (Carro.precio==carro.precio) &
+            (Carro.kilometraje==carro.kilometraje)
         ).first()
     if carro_existente:
         raise HTTPException(status_code=409, detail="El carro ya esta en la base de datos")
@@ -43,12 +43,29 @@ def leer_carro(db: Session=Depends(get_db)):
 def obtener_carro(id:int,db: Session=Depends(get_db)):
     carro = db.query(Carro).get(id)
     if carro is None:
-        raise HTTPException(status_code=404, detail="El carro no esta en la lista intente otro id :)")
+        raise HTTPException(status_code=404, detail="El carro no esta en la lista intente otro id ")
     return carro
+
+#------------------ BUG AUN NO IMPLEMENTAR -----------------------#
+#ruta para leer un carro por nombre
+#@router.get("/carros/{modelo}",response_model=leercarro)
+#def obtener_carro_n(modelo:str,db: Session=Depends(get_db)):
+#    carro = db.query(Carro).get(modelo)
+#    if carro is None:
+#        raise HTTPException(status_code=404, detail="El carro no esta en la lista intente otro modelo")
+#    return carro
+
+
+
 
 #ruta para enviar una marca
 @router.post("/marcas/")
 def crear_marca(marca:crearmarca, db: Session = Depends(get_db)):
+    marca_existente = db.query(Marca).filter(
+            (Marca.nombre==marca.nombre)
+            ).first()
+    if marca_existente:
+        raise HTTPException(status_code=409,detail="La marca ya existe")
     nueva_marca= Marca(
             nombre=marca.nombre,
             id=marca.id
@@ -63,5 +80,13 @@ def crear_marca(marca:crearmarca, db: Session = Depends(get_db)):
 def leer_marca(db: Session=Depends(get_db)):
     marcas = db.query(Marca).all()
     return marcas
+
+#ruta para leer una marca por el id
+@router.get("/marcas/{id}",response_model=leermarca)
+def leer_marca(id:int,db: Session=Depends(get_db)):
+    marca = db.query(Marca).get(id)
+    if marca is None:
+        raise HTTPException(status_code=404,detail="La marca no esta en la lista, intente otro id")
+    return marca
 
 
