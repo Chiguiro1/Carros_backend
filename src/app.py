@@ -7,6 +7,6 @@ app.include_router(carros_router)
 
 @app.get("/")
 def a():
-    return {"message":"hola"}
+    return {"message":"Hola, por favor ir a http://localhost:8020/docs para ver los endpoints Gracias"}
 
 

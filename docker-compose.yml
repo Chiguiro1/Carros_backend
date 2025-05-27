@@ -1,32 +1,30 @@
 version: "3.8"
 
 services:
-
   db:
     image: postgres:15
-    
-    container_name: "cars_db"
-   
+    container_name: cars_db
     restart: always
-    
     environment:
       POSTGRES_USER: tester
       POSTGRES_PASSWORD: testerpass
       POSTGRES_DB: carros
-    
     ports:
       - "5432:5432"
-    
     volumes:
       - carros_data:/var/lib/postgresql/data
 
+  api:
+    build: .
+    container_name: cars_api
+    command: uvicorn main:app --host 0.0.0.0 --port 8020 --reload
+    ports:
+      - "8020:8020"
+    volumes:
+      - ./src:/app
+    depends_on:
+      - db
+
 volumes:
   carros_data:
-
-#-----------------------------------------------#
-version: "3.8"
-
-services:
-  db:
-    image:
 
