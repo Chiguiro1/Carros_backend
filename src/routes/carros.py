@@ -108,4 +108,14 @@ def leer_marca_id(id:int,db: Session=Depends(get_db)):
         raise HTTPException(status_code=404,detail="La marca no esta en la lista, intente otro id")
     return marca
 
+@router.put("/marcas/{id}",response_model=crearmarca)
+def actualizar_c(id:int,marca:crearmarca,db:Session=Depends(get_db)):
+    marca_existente = db.query(Marca).filter(Marca.id==marca.id).first()
+    if marca_existente is None:
+        raise HTTPException(status_code=404,detail="La marca no esta en la lista, intente otro id")
+    
+    marca_existente.nombre=marca.nombre
 
+    db.commit()
+    db.refresh(marca_existente)
+    return marca_existente

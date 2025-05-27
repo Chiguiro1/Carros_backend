@@ -2,7 +2,6 @@ from pydantic import BaseModel
 
 #esquemas carros
 class crearcarro(BaseModel):
-    id:int
     modelo:str
     precio:int
     kilometraje:int
@@ -22,8 +21,6 @@ class leercarro(BaseModel):
 #esquemas marcas
 class crearmarca(BaseModel):
     nombre: str
-    id : int
-
 class leermarca(BaseModel):
     nombre: str
     id :int

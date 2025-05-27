@@ -22,3 +22,11 @@ services:
 
 volumes:
   carros_data:
+
+#-----------------------------------------------#
+version: "3.8"
+
+services:
+  db:
+    image:
+
